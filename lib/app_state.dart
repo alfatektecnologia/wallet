@@ -153,6 +153,12 @@ class FFAppState extends ChangeNotifier {
   void updateTokenBalanceStruct(Function(TokenBalanceStruct) updateFn) {
     updateFn(_tokenBalance);
   }
+
+  String _message = '';
+  String get message => _message;
+  set message(String value) {
+    _message = value;
+  }
 }
 
 void _safeInit(Function() initializeField) {

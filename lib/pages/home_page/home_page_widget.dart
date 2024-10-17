@@ -42,10 +42,14 @@ class _HomePageWidgetState extends State<HomePageWidget>
     _model.tabBarController = TabController(
       vsync: this,
       length: 4,
-      initialIndex: 3,
+      initialIndex: 1,
     )..addListener(() => safeSetState(() {}));
-    _model.textController ??= TextEditingController();
-    _model.textFieldFocusNode ??= FocusNode();
+    _model.textController1 ??=
+        TextEditingController(text: FFAppState().wallet.tokenAddress);
+    _model.textFieldFocusNode1 ??= FocusNode();
+
+    _model.textController2 ??= TextEditingController();
+    _model.textFieldFocusNode2 ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
@@ -416,7 +420,7 @@ class _HomePageWidgetState extends State<HomePageWidget>
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           FlutterFlowRadioButton(
-                            options: ['Mainnet', 'sepolia'].toList(),
+                            options: ['eth', 'sepolia'].toList(),
                             onChanged: (val) => safeSetState(() {}),
                             controller: _model.radioButtonValueController ??=
                                 FormFieldController<String>('sepolia'),
@@ -549,7 +553,53 @@ class _HomePageWidgetState extends State<HomePageWidget>
 
                                     safeSetState(() {});
                                   },
-                                  () async {}
+                                  () async {
+                                    if ((_model.textController1.text ==
+                                            getJsonField(
+                                              homePageGetTokenBalanceByWalletResponse
+                                                  .jsonBody,
+                                              r'''$[:].token_address''',
+                                            ).toString()) &&
+                                        (getJsonField(
+                                              homePageGetTokenBalanceByWalletResponse
+                                                  .jsonBody,
+                                              r'''$[:].token_address''',
+                                            ) !=
+                                            null)) {
+                                      _model.apiResultizv =
+                                          await MorallisWebGroup
+                                              .getTokenMetadataCall
+                                              .call(
+                                        contractAddress:
+                                            _model.textController1.text,
+                                        chain: _model.radioButtonValue,
+                                      );
+
+                                      if ((_model.apiResultizv?.succeeded ??
+                                          true)) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              'Connected',
+                                              style: TextStyle(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryText,
+                                              ),
+                                            ),
+                                            duration:
+                                                const Duration(milliseconds: 4000),
+                                            backgroundColor:
+                                                FlutterFlowTheme.of(context)
+                                                    .secondary,
+                                          ),
+                                        );
+                                      }
+                                    }
+
+                                    safeSetState(() {});
+                                  }
                                 ][i]();
                               },
                             ),
@@ -664,30 +714,84 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                                         .tertiary,
                                                   ),
                                                 ),
-                                                child: Padding(
-                                                  padding: const EdgeInsetsDirectional
-                                                      .fromSTEB(
-                                                          8.0, 8.0, 8.0, 8.0),
-                                                  child: Text(
-                                                    getJsonField(
-                                                      homePageGetTokenBalanceByWalletResponse
-                                                          .jsonBody,
-                                                      r'''$[:].token_address''',
-                                                    ).toString(),
-                                                    textAlign: TextAlign.end,
-                                                    maxLines: 2,
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .bodyMedium
-                                                        .override(
-                                                          fontFamily: 'Inter',
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsetsDirectional
+                                                              .fromSTEB(
+                                                                  8.0,
+                                                                  8.0,
+                                                                  8.0,
+                                                                  8.0),
+                                                      child: Text(
+                                                        getJsonField(
+                                                          homePageGetTokenBalanceByWalletResponse
+                                                              .jsonBody,
+                                                          r'''$[:].token_address''',
+                                                        ).toString(),
+                                                        textAlign:
+                                                            TextAlign.end,
+                                                        style:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyMedium
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Inter',
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .tertiary,
+                                                                  fontSize:
+                                                                      10.0,
+                                                                  letterSpacing:
+                                                                      0.0,
+                                                                ),
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsetsDirectional
+                                                              .fromSTEB(
+                                                                  0.0,
+                                                                  0.0,
+                                                                  3.0,
+                                                                  0.0),
+                                                      child: InkWell(
+                                                        splashColor:
+                                                            Colors.transparent,
+                                                        focusColor:
+                                                            Colors.transparent,
+                                                        hoverColor:
+                                                            Colors.transparent,
+                                                        highlightColor:
+                                                            Colors.transparent,
+                                                        onTap: () async {
+                                                          await Clipboard.setData(
+                                                              ClipboardData(
+                                                                  text:
+                                                                      getJsonField(
+                                                            (_model.apiResultq74
+                                                                    ?.jsonBody ??
+                                                                ''),
+                                                            r'''$[:].token_address''',
+                                                          ).toString()));
+                                                        },
+                                                        child: Icon(
+                                                          Icons.content_copy,
                                                           color: FlutterFlowTheme
                                                                   .of(context)
-                                                              .tertiary,
-                                                          fontSize: 13.0,
-                                                          letterSpacing: 0.0,
+                                                              .primaryText,
+                                                          size: 24.0,
                                                         ),
-                                                  ),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ),
@@ -811,6 +915,46 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                         ],
                                       ),
                                     ),
+                                    Padding(
+                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                          8.0, 16.0, 8.0, 0.0),
+                                      child: FFButtonWidget(
+                                        onPressed: () async {
+                                          FFAppState().updateWalletStruct(
+                                            (e) => e
+                                              ..tokenAddress = getJsonField(
+                                                homePageGetTokenBalanceByWalletResponse
+                                                    .jsonBody,
+                                                r'''$[:].token_address''',
+                                              ).toString(),
+                                          );
+                                          safeSetState(() {});
+                                        },
+                                        text: 'Refresh',
+                                        options: FFButtonOptions(
+                                          height: 40.0,
+                                          padding:
+                                              const EdgeInsetsDirectional.fromSTEB(
+                                                  16.0, 0.0, 16.0, 0.0),
+                                          iconPadding:
+                                              const EdgeInsetsDirectional.fromSTEB(
+                                                  0.0, 0.0, 0.0, 0.0),
+                                          color: FlutterFlowTheme.of(context)
+                                              .primary,
+                                          textStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .titleSmall
+                                                  .override(
+                                                    fontFamily: 'Inter',
+                                                    color: Colors.white,
+                                                    letterSpacing: 0.0,
+                                                  ),
+                                          elevation: 0.0,
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                                 SingleChildScrollView(
@@ -920,7 +1064,101 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                     children: [
                                       Padding(
                                         padding: const EdgeInsetsDirectional.fromSTEB(
-                                            8.0, 16.0, 0.0, 0.0),
+                                            8.0, 16.0, 8.0, 0.0),
+                                        child: SizedBox(
+                                          width: double.infinity,
+                                          child: TextFormField(
+                                            controller: _model.textController1,
+                                            focusNode:
+                                                _model.textFieldFocusNode1,
+                                            autofocus: true,
+                                            textInputAction:
+                                                TextInputAction.next,
+                                            obscureText: false,
+                                            decoration: InputDecoration(
+                                              isDense: true,
+                                              labelText: 'Contract number',
+                                              labelStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        fontFamily: 'Inter',
+                                                        letterSpacing: 0.0,
+                                                      ),
+                                              hintText: 'Contract number',
+                                              hintStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .labelMedium
+                                                      .override(
+                                                        fontFamily: 'Inter',
+                                                        letterSpacing: 0.0,
+                                                      ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .primary,
+                                                  width: 1.0,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: const BorderSide(
+                                                  color: Color(0x00000000),
+                                                  width: 1.0,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                              ),
+                                              errorBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .error,
+                                                  width: 1.0,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                              ),
+                                              focusedErrorBorder:
+                                                  OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .error,
+                                                  width: 1.0,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                              ),
+                                              filled: true,
+                                              fillColor:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryBackground,
+                                              suffixIcon: const Icon(
+                                                Icons.create_outlined,
+                                              ),
+                                            ),
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                                  fontFamily: 'Inter',
+                                                  fontSize: 12.0,
+                                                  letterSpacing: 0.0,
+                                                ),
+                                            cursorColor:
+                                                FlutterFlowTheme.of(context)
+                                                    .primaryText,
+                                            validator: _model
+                                                .textController1Validator
+                                                .asValidator(context),
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsetsDirectional.fromSTEB(
+                                            8.0, 8.0, 0.0, 0.0),
                                         child: Text(
                                           'Receive message:',
                                           style: FlutterFlowTheme.of(context)
@@ -936,7 +1174,7 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                             8.0, 0.0, 8.0, 0.0),
                                         child: Container(
                                           width: double.infinity,
-                                          height: 100.0,
+                                          height: 60.0,
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(8.0),
@@ -949,12 +1187,17 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                           child: Padding(
                                             padding:
                                                 const EdgeInsetsDirectional.fromSTEB(
-                                                    0.0, 8.0, 0.0, 0.0),
+                                                    8.0, 8.0, 8.0, 8.0),
                                             child: RichText(
                                               textScaler: MediaQuery.of(context)
                                                   .textScaler,
                                               text: TextSpan(
-                                                children: const [],
+                                                children: [
+                                                  TextSpan(
+                                                    text: FFAppState().message,
+                                                    style: const TextStyle(),
+                                                  )
+                                                ],
                                                 style:
                                                     FlutterFlowTheme.of(context)
                                                         .bodyMedium
@@ -986,9 +1229,9 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                         child: SizedBox(
                                           width: double.infinity,
                                           child: TextFormField(
-                                            controller: _model.textController,
+                                            controller: _model.textController2,
                                             focusNode:
-                                                _model.textFieldFocusNode,
+                                                _model.textFieldFocusNode2,
                                             autofocus: true,
                                             textInputAction:
                                                 TextInputAction.next,
@@ -1059,12 +1302,12 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                                   fontFamily: 'Inter',
                                                   letterSpacing: 0.0,
                                                 ),
-                                            maxLines: 4,
+                                            maxLines: 2,
                                             cursorColor:
                                                 FlutterFlowTheme.of(context)
                                                     .primaryText,
                                             validator: _model
-                                                .textControllerValidator
+                                                .textController2Validator
                                                 .asValidator(context),
                                           ),
                                         ),
@@ -1076,32 +1319,110 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                           padding:
                                               const EdgeInsetsDirectional.fromSTEB(
                                                   0.0, 16.0, 0.0, 0.0),
-                                          child: FFButtonWidget(
-                                            onPressed: () {
-                                              print('Button pressed ...');
+                                          child: InkWell(
+                                            splashColor: Colors.transparent,
+                                            focusColor: Colors.transparent,
+                                            hoverColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            onDoubleTap: () async {
+                                              _model.resultGetMessage =
+                                                  await actions.getMessage(
+                                                context,
+                                                _model.textController1.text,
+                                              );
+                                              FFAppState().message =
+                                                  _model.resultGetMessage!;
+                                              safeSetState(() {});
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    _model.resultGetMessage!,
+                                                    style: TextStyle(
+                                                      color:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .primaryText,
+                                                    ),
+                                                  ),
+                                                  duration: const Duration(
+                                                      milliseconds: 4000),
+                                                  backgroundColor:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .secondary,
+                                                ),
+                                              );
+
+                                              safeSetState(() {});
                                             },
-                                            text: 'Send message',
-                                            options: FFButtonOptions(
-                                              height: 40.0,
-                                              padding: const EdgeInsetsDirectional
-                                                  .fromSTEB(
-                                                      16.0, 0.0, 16.0, 0.0),
-                                              iconPadding: const EdgeInsetsDirectional
-                                                  .fromSTEB(0.0, 0.0, 0.0, 0.0),
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .primary,
-                                              textStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .titleSmall
-                                                      .override(
-                                                        fontFamily: 'Inter',
-                                                        color: Colors.white,
-                                                        letterSpacing: 0.0,
+                                            child: FFButtonWidget(
+                                              onPressed: () async {
+                                                _model.resultMessage =
+                                                    await actions.setMessage(
+                                                  context,
+                                                  _model.textController2.text,
+                                                  FFAppState()
+                                                      .wallet
+                                                      .privateKey,
+                                                  _model.textController1.text,
+                                                );
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      _model.resultMessage!,
+                                                      style: TextStyle(
+                                                        color:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .primaryText,
                                                       ),
-                                              elevation: 0.0,
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
+                                                    ),
+                                                    duration: const Duration(
+                                                        milliseconds: 4000),
+                                                    backgroundColor:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .secondary,
+                                                  ),
+                                                );
+                                                _model.message =
+                                                    await actions.getMessage(
+                                                  context,
+                                                  _model.textController1.text,
+                                                );
+                                                FFAppState().message =
+                                                    _model.message!;
+                                                safeSetState(() {});
+
+                                                safeSetState(() {});
+                                              },
+                                              text: 'Send message',
+                                              options: FFButtonOptions(
+                                                height: 40.0,
+                                                padding: const EdgeInsetsDirectional
+                                                    .fromSTEB(
+                                                        16.0, 0.0, 16.0, 0.0),
+                                                iconPadding:
+                                                    const EdgeInsetsDirectional
+                                                        .fromSTEB(
+                                                            0.0, 0.0, 0.0, 0.0),
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primary,
+                                                textStyle:
+                                                    FlutterFlowTheme.of(context)
+                                                        .titleSmall
+                                                        .override(
+                                                          fontFamily: 'Inter',
+                                                          color: Colors.white,
+                                                          letterSpacing: 0.0,
+                                                        ),
+                                                elevation: 0.0,
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                              ),
                                             ),
                                           ),
                                         ),
