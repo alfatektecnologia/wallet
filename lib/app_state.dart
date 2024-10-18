@@ -145,6 +145,16 @@ class FFAppState extends ChangeNotifier {
   void updateTokenBalanceStruct(Function(TokenBalanceStruct) updateFn) {
     updateFn(_tokenBalance);
   }
+
+  MessageStruct _message = MessageStruct();
+  MessageStruct get message => _message;
+  set message(MessageStruct value) {
+    _message = value;
+  }
+
+  void updateMessageStruct(Function(MessageStruct) updateFn) {
+    updateFn(_message);
+  }
 }
 
 void _safeInit(Function() initializeField) {
