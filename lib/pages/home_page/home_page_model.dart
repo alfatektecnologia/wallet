@@ -42,8 +42,6 @@ class HomePageModel extends FlutterFlowModel<HomePageWidget> {
   String? resultMessage;
   // Stores action output result for [Custom Action - getMessage] action in Button widget.
   String? message;
-  // Stores action output result for [Custom Action - getMessage] action in Button widget.
-  String? resultGetMessage;
 
   @override
   void initState(BuildContext context) {}

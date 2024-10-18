@@ -154,10 +154,14 @@ class FFAppState extends ChangeNotifier {
     updateFn(_tokenBalance);
   }
 
-  String _message = '';
-  String get message => _message;
-  set message(String value) {
+  MessageStruct _message = MessageStruct();
+  MessageStruct get message => _message;
+  set message(MessageStruct value) {
     _message = value;
+  }
+
+  void updateMessageStruct(Function(MessageStruct) updateFn) {
+    updateFn(_message);
   }
 }
 

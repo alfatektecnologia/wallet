@@ -8,6 +8,7 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/form_field_controller.dart';
 import '/custom_code/actions/index.dart' as actions;
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -47,10 +48,24 @@ class _HomePageWidgetState extends State<HomePageWidget>
     _model.textController1 ??=
         TextEditingController(text: FFAppState().wallet.tokenAddress);
     _model.textFieldFocusNode1 ??= FocusNode();
-
+    _model.textFieldFocusNode1!.addListener(
+      () async {
+        FFAppState().updateMessageStruct(
+          (e) => e..contrato = _model.textController1.text,
+        );
+        safeSetState(() {});
+      },
+    );
     _model.textController2 ??= TextEditingController();
     _model.textFieldFocusNode2 ??= FocusNode();
-
+    _model.textFieldFocusNode2!.addListener(
+      () async {
+        FFAppState().updateMessageStruct(
+          (e) => e..inputMessage = _model.textController2.text,
+        );
+        safeSetState(() {});
+      },
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
@@ -554,24 +569,13 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                     safeSetState(() {});
                                   },
                                   () async {
-                                    if ((_model.textController1.text ==
-                                            getJsonField(
-                                              homePageGetTokenBalanceByWalletResponse
-                                                  .jsonBody,
-                                              r'''$[:].token_address''',
-                                            ).toString()) &&
-                                        (getJsonField(
-                                              homePageGetTokenBalanceByWalletResponse
-                                                  .jsonBody,
-                                              r'''$[:].token_address''',
-                                            ) !=
-                                            null)) {
+                                    if (FFAppState().message.contrato == '') {
                                       _model.apiResultizv =
                                           await MorallisWebGroup
                                               .getTokenMetadataCall
                                               .call(
                                         contractAddress:
-                                            _model.textController1.text,
+                                            FFAppState().message.contrato,
                                         chain: _model.radioButtonValue,
                                       );
 
@@ -581,7 +585,7 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                             .showSnackBar(
                                           SnackBar(
                                             content: Text(
-                                              'Connected',
+                                              'Connected with contract',
                                               style: TextStyle(
                                                 color:
                                                     FlutterFlowTheme.of(context)
@@ -595,6 +599,15 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                                     .secondary,
                                           ),
                                         );
+                                        FFAppState().updateMessageStruct(
+                                          (e) => e
+                                            ..contrato = getJsonField(
+                                              (_model.apiResultizv?.jsonBody ??
+                                                  ''),
+                                              r'''$[:].token_address''',
+                                            ).toString(),
+                                        );
+                                        safeSetState(() {});
                                       }
                                     }
 
@@ -1071,7 +1084,29 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                             controller: _model.textController1,
                                             focusNode:
                                                 _model.textFieldFocusNode1,
-                                            autofocus: true,
+                                            onChanged: (_) =>
+                                                EasyDebounce.debounce(
+                                              '_model.textController1',
+                                              const Duration(milliseconds: 2000),
+                                              () async {
+                                                FFAppState()
+                                                    .updateMessageStruct(
+                                                  (e) => e
+                                                    ..contrato = _model
+                                                        .textController1.text,
+                                                );
+                                                safeSetState(() {});
+                                              },
+                                            ),
+                                            onFieldSubmitted: (_) async {
+                                              FFAppState().updateMessageStruct(
+                                                (e) => e
+                                                  ..contrato = _model
+                                                      .textController1.text,
+                                              );
+                                              safeSetState(() {});
+                                            },
+                                            autofocus: false,
                                             textInputAction:
                                                 TextInputAction.next,
                                             obscureText: false,
@@ -1194,7 +1229,9 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                               text: TextSpan(
                                                 children: [
                                                   TextSpan(
-                                                    text: FFAppState().message,
+                                                    text: FFAppState()
+                                                        .message
+                                                        .outputMessage,
                                                     style: const TextStyle(),
                                                   )
                                                 ],
@@ -1232,6 +1269,28 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                             controller: _model.textController2,
                                             focusNode:
                                                 _model.textFieldFocusNode2,
+                                            onChanged: (_) =>
+                                                EasyDebounce.debounce(
+                                              '_model.textController2',
+                                              const Duration(milliseconds: 2000),
+                                              () async {
+                                                FFAppState()
+                                                    .updateMessageStruct(
+                                                  (e) => e
+                                                    ..inputMessage = _model
+                                                        .textController2.text,
+                                                );
+                                                safeSetState(() {});
+                                              },
+                                            ),
+                                            onFieldSubmitted: (_) async {
+                                              FFAppState().updateMessageStruct(
+                                                (e) => e
+                                                  ..inputMessage = _model
+                                                      .textController2.text,
+                                              );
+                                              safeSetState(() {});
+                                            },
                                             autofocus: true,
                                             textInputAction:
                                                 TextInputAction.next,
@@ -1319,25 +1378,25 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                           padding:
                                               const EdgeInsetsDirectional.fromSTEB(
                                                   0.0, 16.0, 0.0, 0.0),
-                                          child: InkWell(
-                                            splashColor: Colors.transparent,
-                                            focusColor: Colors.transparent,
-                                            hoverColor: Colors.transparent,
-                                            highlightColor: Colors.transparent,
-                                            onDoubleTap: () async {
-                                              _model.resultGetMessage =
-                                                  await actions.getMessage(
+                                          child: FFButtonWidget(
+                                            onPressed: () async {
+                                              _model.resultMessage =
+                                                  await actions.setMessage(
                                                 context,
-                                                _model.textController1.text,
+                                                FFAppState()
+                                                    .message
+                                                    .inputMessage,
+                                                FFAppState().wallet.privateKey,
+                                                FFAppState().message.contrato,
                                               );
-                                              FFAppState().message =
-                                                  _model.resultGetMessage!;
-                                              safeSetState(() {});
+                                              await Future.delayed(
+                                                  const Duration(
+                                                      milliseconds: 1000));
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(
                                                 SnackBar(
                                                   content: Text(
-                                                    _model.resultGetMessage!,
+                                                    _model.resultMessage!,
                                                     style: TextStyle(
                                                       color:
                                                           FlutterFlowTheme.of(
@@ -1353,76 +1412,42 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                                           .secondary,
                                                 ),
                                               );
+                                              _model.message =
+                                                  await actions.getMessage(
+                                                context,
+                                                FFAppState().message.contrato,
+                                              );
+                                              FFAppState().updateMessageStruct(
+                                                (e) => e
+                                                  ..outputMessage =
+                                                      _model.message,
+                                              );
+                                              safeSetState(() {});
 
                                               safeSetState(() {});
                                             },
-                                            child: FFButtonWidget(
-                                              onPressed: () async {
-                                                _model.resultMessage =
-                                                    await actions.setMessage(
-                                                  context,
-                                                  _model.textController2.text,
-                                                  FFAppState()
-                                                      .wallet
-                                                      .privateKey,
-                                                  _model.textController1.text,
-                                                );
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(
-                                                      _model.resultMessage!,
-                                                      style: TextStyle(
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .primaryText,
+                                            text: 'Send message',
+                                            options: FFButtonOptions(
+                                              height: 40.0,
+                                              padding: const EdgeInsetsDirectional
+                                                  .fromSTEB(
+                                                      16.0, 0.0, 16.0, 0.0),
+                                              iconPadding: const EdgeInsetsDirectional
+                                                  .fromSTEB(0.0, 0.0, 0.0, 0.0),
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .primary,
+                                              textStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .titleSmall
+                                                      .override(
+                                                        fontFamily: 'Inter',
+                                                        color: Colors.white,
+                                                        letterSpacing: 0.0,
                                                       ),
-                                                    ),
-                                                    duration: const Duration(
-                                                        milliseconds: 4000),
-                                                    backgroundColor:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .secondary,
-                                                  ),
-                                                );
-                                                _model.message =
-                                                    await actions.getMessage(
-                                                  context,
-                                                  _model.textController1.text,
-                                                );
-                                                FFAppState().message =
-                                                    _model.message!;
-                                                safeSetState(() {});
-
-                                                safeSetState(() {});
-                                              },
-                                              text: 'Send message',
-                                              options: FFButtonOptions(
-                                                height: 40.0,
-                                                padding: const EdgeInsetsDirectional
-                                                    .fromSTEB(
-                                                        16.0, 0.0, 16.0, 0.0),
-                                                iconPadding:
-                                                    const EdgeInsetsDirectional
-                                                        .fromSTEB(
-                                                            0.0, 0.0, 0.0, 0.0),
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .primary,
-                                                textStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .titleSmall
-                                                        .override(
-                                                          fontFamily: 'Inter',
-                                                          color: Colors.white,
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                                elevation: 0.0,
-                                                borderRadius:
-                                                    BorderRadius.circular(8.0),
-                                              ),
+                                              elevation: 0.0,
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
                                             ),
                                           ),
                                         ),
