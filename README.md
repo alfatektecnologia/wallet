@@ -1,6 +1,6 @@
 ### ZoonersWallet 
 
-This project is part of a DOJO challenge at NearX Education. 
+This project is part of a DOJO challenge created by [Lucas Oliveira]([url](https://www.linkedin.com/in/olivmath?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BlpvG1FrZTtCwVHcMeAIarw%3D%3D)) at [NearX Innovation]([url](https://nearx.com.br/pt/home)). 
 
 ## Getting Started
 
@@ -11,11 +11,11 @@ We have 3 screens:
 - authentication(disabled at this version)
 - homepage
 
-  
-You can see 2 branches and the updated one is flutterflow branch.
-I will create a readme file describing the steps I used to code this app.
-Do you have an android device? Download this apk file:
+  ![tela_cell](https://github.com/user-attachments/assets/94d9ae21-8f2e-4328-ab95-f249a5afe255)
 
-To others special people with iOS devices the web version is here:
+
+I will create a readme file describing the steps I used to code this app.
+
+Link to access a web version: https://app.flutterflow.io/preview/zooners-wallet-dqwm28?page=HomePage
 
 Thanks!
