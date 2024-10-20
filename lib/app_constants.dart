@@ -1,6 +1,8 @@
 
 abstract class FFAppConstants {
-  static const String ApiKeyWeb3Morallis =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjdlMDk4NDY4LTdiODUtNGFhZS1iYWRhLTgzNTkyYjVkOGY1NyIsIm9yZ0lkIjoiNDExMzIwIiwidXNlcklkIjoiNDIyNjk2IiwidHlwZUlkIjoiMGZmZjFlNDQtNTdkNi00NmY3LTk5MDMtM2RkNzIxZmZkNzhmIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3Mjg2NDUwMzIsImV4cCI6NDg4NDQwNTAzMn0.4RLw7CPq9mO-9_qeIN7JqFQHZQpq0bivjFH5znODeGs';
-  static const String amoyApi = 'G1VMCC8VVWEA6RWU76NM3X52I8RH1DYVUR';
+  static const String ApiKeyWeb3Morallis = 'YOUR_API_KEY'
+
+  static const String amoyApi = 'YOUR_API_KEY';
 }
+
+  

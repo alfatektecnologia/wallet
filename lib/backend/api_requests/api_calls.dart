@@ -198,7 +198,7 @@ class InfuraGroup {
 
 class GetInfuraCall {
   Future<ApiCallResponse> call({
-    String? apiKey = '005719757d8f4228b7c9472f9e275b6f',
+    String? apiKey = 'YOUR_API_KEY',
   }) async {
     final baseUrl = InfuraGroup.getBaseUrl();
 
