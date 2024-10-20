@@ -435,7 +435,8 @@ class _HomePageWidgetState extends State<HomePageWidget>
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           FlutterFlowRadioButton(
-                            options: ['eth', 'sepolia'].toList(),
+                            options:
+                                ['eth', 'sepolia', 'polygon amoy'].toList(),
                             onChanged: (val) => safeSetState(() {}),
                             controller: _model.radioButtonValueController ??=
                                 FormFieldController<String>('sepolia'),
@@ -575,7 +576,7 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                               .getTokenMetadataCall
                                               .call(
                                         contractAddress:
-                                            FFAppState().message.contrato,
+                                            FFAppState().wallet.tokenAddress,
                                         chain: _model.radioButtonValue,
                                       );
 
@@ -1237,7 +1238,7 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                                 ],
                                                 style:
                                                     FlutterFlowTheme.of(context)
-                                                        .bodyMedium
+                                                        .bodySmall
                                                         .override(
                                                           fontFamily: 'Inter',
                                                           letterSpacing: 0.0,
@@ -1371,85 +1372,242 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                           ),
                                         ),
                                       ),
-                                      Align(
-                                        alignment:
-                                            const AlignmentDirectional(0.0, 0.0),
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsetsDirectional.fromSTEB(
-                                                  0.0, 16.0, 0.0, 0.0),
-                                          child: FFButtonWidget(
-                                            onPressed: () async {
-                                              _model.resultMessage =
-                                                  await actions.setMessage(
-                                                context,
-                                                FFAppState()
-                                                    .message
-                                                    .inputMessage,
-                                                FFAppState().wallet.privateKey,
-                                                FFAppState().message.contrato,
-                                              );
-                                              await Future.delayed(
-                                                  const Duration(
-                                                      milliseconds: 1000));
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                    _model.resultMessage!,
-                                                    style: TextStyle(
-                                                      color:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .primaryText,
-                                                    ),
-                                                  ),
-                                                  duration: const Duration(
-                                                      milliseconds: 4000),
-                                                  backgroundColor:
-                                                      FlutterFlowTheme.of(
+                                      Padding(
+                                        padding: const EdgeInsetsDirectional.fromSTEB(
+                                            8.0, 0.0, 8.0, 0.0),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Align(
+                                              alignment: const AlignmentDirectional(
+                                                  0.0, 0.0),
+                                              child: Padding(
+                                                padding: const EdgeInsetsDirectional
+                                                    .fromSTEB(
+                                                        0.0, 16.0, 0.0, 0.0),
+                                                child: FFButtonWidget(
+                                                  onPressed: () async {
+                                                    if (((_model.textController1
+                                                                    .text !=
+                                                                'null') &&
+                                                            (FFAppState()
+                                                                        .message
+                                                                        .inputMessage !=
+                                                                    '')) &&
+                                                        (FFAppState()
+                                                                    .message
+                                                                    .inputMessage !=
+                                                                '') &&
+                                                        (_model.radioButtonValue !=
+                                                            'poligon amoy')) {
+                                                      _model.resultMessage =
+                                                          await actions
+                                                              .setMessage(
+                                                        context,
+                                                        FFAppState()
+                                                            .message
+                                                            .inputMessage,
+                                                        FFAppState()
+                                                            .wallet
+                                                            .privateKey,
+                                                        FFAppState()
+                                                            .message
+                                                            .contrato,
+                                                        _model.radioButtonValue ==
+                                                                'poligon amoy'
+                                                            ? 'https://api-testnet.polygonscan.com/api?module=contract&action=getabi&address=0x50802059B3A299b36bc2c71aBEDBA450032f49AB&apikey=YourApiKeyToken'
+                                                            : 'https://sepolia.drpc.org/',
+                                                      );
+                                                      ScaffoldMessenger.of(
                                                               context)
-                                                          .secondary,
-                                                ),
-                                              );
-                                              _model.message =
-                                                  await actions.getMessage(
-                                                context,
-                                                FFAppState().message.contrato,
-                                              );
-                                              FFAppState().updateMessageStruct(
-                                                (e) => e
-                                                  ..outputMessage =
-                                                      _model.message,
-                                              );
-                                              safeSetState(() {});
+                                                          .showSnackBar(
+                                                        SnackBar(
+                                                          content: Text(
+                                                            _model
+                                                                .resultMessage!,
+                                                            style: TextStyle(
+                                                              color: FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .primaryText,
+                                                            ),
+                                                          ),
+                                                          duration: const Duration(
+                                                              milliseconds:
+                                                                  4000),
+                                                          backgroundColor:
+                                                              FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .secondary,
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      if (_model
+                                                              .radioButtonValue !=
+                                                          'poligon amoy') {
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                          SnackBar(
+                                                            content: Text(
+                                                              'Contract address or message invalid!',
+                                                              style: TextStyle(
+                                                                color: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .info,
+                                                              ),
+                                                            ),
+                                                            duration: const Duration(
+                                                                milliseconds:
+                                                                    4000),
+                                                            backgroundColor:
+                                                                FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .error,
+                                                          ),
+                                                        );
+                                                      } else {
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                          SnackBar(
+                                                            content: Text(
+                                                              'Chain not ready to use',
+                                                              style: TextStyle(
+                                                                color: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .info,
+                                                              ),
+                                                            ),
+                                                            duration: const Duration(
+                                                                milliseconds:
+                                                                    4000),
+                                                            backgroundColor:
+                                                                FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .warning,
+                                                          ),
+                                                        );
+                                                      }
+                                                    }
 
-                                              safeSetState(() {});
-                                            },
-                                            text: 'Send message',
-                                            options: FFButtonOptions(
-                                              height: 40.0,
+                                                    safeSetState(() {});
+                                                  },
+                                                  text: 'Send message',
+                                                  options: FFButtonOptions(
+                                                    height: 40.0,
+                                                    padding:
+                                                        const EdgeInsetsDirectional
+                                                            .fromSTEB(16.0, 0.0,
+                                                                16.0, 0.0),
+                                                    iconPadding:
+                                                        const EdgeInsetsDirectional
+                                                            .fromSTEB(0.0, 0.0,
+                                                                0.0, 0.0),
+                                                    color: FlutterFlowTheme.of(
+                                                            context)
+                                                        .primary,
+                                                    textStyle: FlutterFlowTheme
+                                                            .of(context)
+                                                        .titleSmall
+                                                        .override(
+                                                          fontFamily: 'Inter',
+                                                          color: Colors.white,
+                                                          letterSpacing: 0.0,
+                                                        ),
+                                                    elevation: 0.0,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8.0),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
                                               padding: const EdgeInsetsDirectional
                                                   .fromSTEB(
-                                                      16.0, 0.0, 16.0, 0.0),
-                                              iconPadding: const EdgeInsetsDirectional
-                                                  .fromSTEB(0.0, 0.0, 0.0, 0.0),
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .primary,
-                                              textStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .titleSmall
-                                                      .override(
-                                                        fontFamily: 'Inter',
-                                                        color: Colors.white,
-                                                        letterSpacing: 0.0,
+                                                      0.0, 16.0, 0.0, 0.0),
+                                              child: FFButtonWidget(
+                                                onPressed: () async {
+                                                  if (FFAppState()
+                                                          .message
+                                                          .contrato !=
+                                                      'null') {
+                                                    _model.message =
+                                                        await actions
+                                                            .getMessage(
+                                                      context,
+                                                      FFAppState()
+                                                          .message
+                                                          .contrato,
+                                                      _model.radioButtonValue ==
+                                                              'poligon amoy'
+                                                          ? 'https://api-testnet.polygonscan.com/api?module=contract&action=getabi&address=&apikey='
+                                                          : 'https://sepolia.drpc.org/',
+                                                    );
+                                                    FFAppState()
+                                                        .updateMessageStruct(
+                                                      (e) => e
+                                                        ..outputMessage =
+                                                            _model.message,
+                                                    );
+                                                    safeSetState(() {});
+                                                  } else {
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                        content: Text(
+                                                          'Contract address invalid!',
+                                                          style: TextStyle(
+                                                            color: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .info,
+                                                          ),
+                                                        ),
+                                                        duration: const Duration(
+                                                            milliseconds: 4000),
+                                                        backgroundColor:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .error,
                                                       ),
-                                              elevation: 0.0,
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
+                                                    );
+                                                  }
+
+                                                  safeSetState(() {});
+                                                },
+                                                text: 'Get message',
+                                                options: FFButtonOptions(
+                                                  height: 40.0,
+                                                  padding: const EdgeInsetsDirectional
+                                                      .fromSTEB(
+                                                          16.0, 0.0, 16.0, 0.0),
+                                                  iconPadding:
+                                                      const EdgeInsetsDirectional
+                                                          .fromSTEB(0.0, 0.0,
+                                                              0.0, 0.0),
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .primary,
+                                                  textStyle:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .titleSmall
+                                                          .override(
+                                                            fontFamily: 'Inter',
+                                                            color: Colors.white,
+                                                            letterSpacing: 0.0,
+                                                          ),
+                                                  elevation: 0.0,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0),
+                                                ),
+                                              ),
                                             ),
-                                          ),
+                                          ],
                                         ),
                                       ),
                                     ],

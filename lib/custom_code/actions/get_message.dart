@@ -14,21 +14,85 @@ import 'package:web3dart/web3dart.dart' as web3;
 import 'package:web3dart/credentials.dart';
 import 'package:http/http.dart' as http;
 
-Future<String> getMessage(BuildContext context, String contractNumber) async {
+Future<String> getMessage(
+    BuildContext context, String contractNumber, String rpc) async {
   http.Client _client = http.Client();
-  web3.Web3Client client =
-      web3.Web3Client("https://sepolia.drpc.org/", _client);
+  web3.Web3Client client = web3.Web3Client(rpc, _client);
 
   String contractABI = '''[
-    {"inputs": [],"name": "getMessage","outputs": [{"internalType": "string","name": "","type": "string"}],"stateMutability": "view","type": "function"},
-    {"inputs": [{"internalType": "string","name": "_msn","type": "string"}],"name": "setMessage","outputs": [],"stateMutability": "nonpayable","type": "function"}
-  ]''';
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "string",
+					"name": "msn",
+					"type": "string"
+				}
+			],
+			"name": "messageCreate",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "string",
+					"name": "ms",
+					"type": "string"
+				}
+			],
+			"name": "messageRecovered",
+			"type": "event"
+		},
+		{
+			"inputs": [],
+			"name": "getMessage",
+			"outputs": [
+				{
+					"internalType": "string",
+					"name": "",
+					"type": "string"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "message",
+			"outputs": [
+				{
+					"internalType": "string",
+					"name": "",
+					"type": "string"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "string",
+					"name": "_msn",
+					"type": "string"
+				}
+			],
+			"name": "setMessage",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	]
+  ''';
   final _contract = web3.DeployedContract(
     web3.ContractAbi.fromJson(contractABI, 'Message'),
     web3.EthereumAddress.fromHex(contractNumber),
   );
 
-  final ethFunction = _contract.function('getMessage');
+  final ethFunction = _contract.function('message');
   final result = await client.call(
     contract: _contract,
     function: ethFunction,
