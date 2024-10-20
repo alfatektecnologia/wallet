@@ -222,6 +222,45 @@ class GetInfuraCall {
 
 /// End Infura Group Code
 
+/// Start Etherscan Group Code
+
+class EtherscanGroup {
+  static String getBaseUrl() => 'https://api.etherscan.io';
+  static Map<String, String> headers = {};
+  static GetABICall getABICall = GetABICall();
+}
+
+class GetABICall {
+  Future<ApiCallResponse> call({
+    String? apiKey = 'NFN1W4IUXV2DTTC2A8G5IS8XW78DZN7BCC',
+    String? address = '',
+  }) async {
+    final baseUrl = EtherscanGroup.getBaseUrl();
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'GetABI',
+      apiUrl: '$baseUrl/api',
+      callType: ApiCallType.GET,
+      headers: {},
+      params: {
+        'module': "contract",
+        'action': "getabi",
+        'address': "0x905021D3034b71003420775677EF6F7313317822",
+        'apikey': "NFN1W4IUXV2DTTC2A8G5IS8XW78DZN7BCC",
+        'chainid': "11155111",
+      },
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+}
+
+/// End Etherscan Group Code
+
 class ApiPagingParams {
   int nextPageNumber = 0;
   int numItems = 0;

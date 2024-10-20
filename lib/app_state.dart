@@ -163,6 +163,12 @@ class FFAppState extends ChangeNotifier {
   void updateMessageStruct(Function(MessageStruct) updateFn) {
     updateFn(_message);
   }
+
+  String _amoyAPI = 'G1VMCC8VVWEA6RWU76NM3X52I8RH1DYVUR';
+  String get amoyAPI => _amoyAPI;
+  set amoyAPI(String value) {
+    _amoyAPI = value;
+  }
 }
 
 void _safeInit(Function() initializeField) {
